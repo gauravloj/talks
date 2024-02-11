@@ -1,0 +1,87 @@
+Under the hood: https://learning.oreilly.com/videos/linux-under-the/9780134663500/
+
+
+
+
+
+content:
+Memory optimization
+
+App -> RAM/SWAP/Cache/buffers -> CPU (L1/L2/L3).
+
+-> Cgroups can limit the amount of memory that a process can use. 
+  - `systemctl set-property httpd MemoryLimit=512M`  -> daemon-reload -> restart -> show
+
+
+-> By default, 4kb pages are used. This is the smallest unit of memory that can be allocated. If you allocate 1 byte, you will still use 4kb. If you allocate 4097 bytes, you will use 8kb. This is because the memory is allocated in pages. The page size is 4kb by default. 
+
+
+!! qperf for network testing
+!! slice information -> cd /usr/lib/systemd/system -> ls -- *slice
+---
+
+
+Demo commands
+`less /proc/meminfo` -> shows the memory information
+`top` -> VIRT, RES columns -> virtual memory, resident memory. Resident memory is the amount of memory that is actually used by the process. Virtual memory is the amount of memory that is allocated to the process. 
+Issue with Memory overallocation, kernel has to allocate resident memory if virtual memory is allocated. OOEM (Out of memory) killer -> kills the process that is using the most memory.
+
+-- Page Cache
+`top` -> mem/swap usage 
+`free -m` -> shows the memory usage in MB. shows with and without buffers/cache
+`echo 3 > /proc/sys/vm/drop_caches` -> drops the page cache
+
+-- Active/Inactive memory
+`cat /proc/meminfo | grep -i Active` -> shows the active/inactive memory.
+Inactive anon -> memory that is not used by any process. It can be swapped out.
+
+`vmstat 2 5` -> shows the memory usage every 2 seconds for 5 times.
+
+- required swap space ~ inactivity memory + 50% of active memory.
+- swap is used for hibernation, suspend to disk, suspend to RAM, crash dump, memory overcome, memory overcommitment.
+
+-- Swap:
+`cat /proc/swaps` -> shows the swap space
+`cat /proc/meminfo | grep -i swap` -> shows the swap space
+`cat /proc/partitions` -> shows the partitions
+`dd if=/dev/zero of=/swapfile bs=1M count=1024` -> creates a swap file of 1GB
+`mkswap /swapfile` -> creates a swap space
+`swapon /swapfile` -> enables the swap space
+`swapon -s` -> shows the swap space
+
+`fdisk /dev/sdb` -> creates a partition with partition type 82 (swap)
+`mkswap /dev/sdb1` -> creates a swap space
+`vi /etc/fstab` -> add the swap space to the fstab file. Add '/dev/sdb1 none swap defaults 0 0'
+`cat /proc/sys/vm/swappiness` -> shows the swappiness value. 0 -> swap is used only when RAM is full. 100 -> swap is used as much as possible.
+
+-- Dirty memory writeback
+`cat /proc/sys/vm/dirty_ratio` -> shows the dirty ratio. 20% by default. When 20% of the memory is dirty, the kernel will start writing the data to the disk.
+`cat /proc/sys/vm/dirty_expire_centisecs` -> shows the dirty expire centisecs. 3000 by default. When the data is dirty for 3000 centiseconds, the kernel will start writing the data to the disk.
+
+-- Huge pages
+`cat /proc/meminfo | grep -i huge` -> shows the huge pages
+`cat /proc/sys/vm/nr_hugepages` -> shows the number of huge pages
+
+`vi /etc/sysctl.conf` -> add the following lines:
+vm.nr_hugepages=512
+vm.hugetlb_shm_group=apache
+
+-- CPU Cache 
+`valgrind --tool=cachegrind ls -l` -> shows the cache misses
+
+-- mem leak
+`valgrind --leak-check=full ls -l` -> shows the memory leaks
+`valgrind --tool=memcheck memleak` -> shows the memory leaks
+`valgrind --tool=memcheck ls -l` -> shows the memory leaks
+
+Run memleak process for demo:
+`gcc -o memleak memleak.c`
+`valgrind --tool=memcheck memleak` -> shows the memory leaks 
+
+write the following in memleak.c:
+#include <stdlib.h>
+int main() {
+    int *ptr = malloc(1024);
+    return 0;
+}
+
