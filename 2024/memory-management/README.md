@@ -29,4 +29,5 @@ Most of the examples in this presentation are copied/inspired directly from belo
 1. [OS Memory management is inspired from 'Linux under the hood', Pearson](https://www.oreilly.com/library/view/linux-under-the/9780134663500/)
 1. [Process Memory layout examples are from 'Extreme C', Packt Publishing](https://www.oreilly.com/library/view/extreme-c/9781789343625/)
 1. [Hacking: The Art of Exploitation, 2nd Edition, No Starch Press](https://learning.oreilly.com/library/view/hacking-the-art/9781593271442/)
+1. [Procfs documentation](https://docs.kernel.org/filesystems/proc.html)
 
