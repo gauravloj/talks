@@ -1,0 +1,25 @@
+1. nm -a
+2. compile with debug symbols: gcc -g -o test test.c
+3. compile with full optimization: gcc -O3 -o test test.c
+4. generate output after preprocessor: gcc -E -o test.i test.c
+5. generate assembly code: gcc -S -o test.s test.c
+6. generate assembly code with full optimization: gcc -O3 -S -o test.s test.c
+7. generate object file: gcc -c -o test.o test.c
+8. Strip the symbol table: strip test
+9. obfuscate the code: gcc -o test test.c -fno-ident -fno-ident
+10. Objdump the object file: objdump -d test.o
+11. Disassemble single function: objdump -d test.o -M intel --section=.text
+12. Checksec the binary: checksec --file=test
+13. Analyse using readelf: readelf -a test
+14. 
+
+Dynamic analysis:
+1. strace: strace ./test
+2. ltrace: ltrace ./test
+3. gdb: gdb ./test
+4. gdb with core dump: gdb ./test core
+5. radare2: r2 ./test
+
+
+
+

@@ -1,0 +1,31 @@
+Raw ideas:
+
+1. Stages of development - domain requirements, development, compilation, assemble, stripping 
+2. Loss of information at every stage 
+  - code : intention. editor
+  - compile/assemble: comments, var names, func names, classes, structs, code removal via optimization. gcc
+  - strip: readibility
+  - final binary: just 1s, 0s
+
+3. Rev engg: 
+
+ Static tools:
+  - kaitai
+  - nm
+  - strings
+  - objdump
+  - checksec
+
+Disassemblers:
+  - IDA pro
+  - Binary Ninja
+  - Angr management
+  - ghidra
+  - cutter
+
+
+ Dyanamic tools:
+  - ltrace, strace - trace lib/sys calls with different inputs
+  - gdb debugging
+
+
